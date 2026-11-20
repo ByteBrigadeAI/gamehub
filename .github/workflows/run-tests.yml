@@ -3,9 +3,9 @@ name: "Run tests"
 # Run tests on pull requests to main and on pushes to main
 on:
   pull_request:
-    branches: [main]
+    branches: [demo-baseline]
   push:
-    branches: [main]
+    branches: [demo-baseline]
   workflow_dispatch:
 
 # Cancel superseded in-progress runs for the same ref so rapid pushes don't

@@ -1,5 +1,25 @@
 # Tailspin Toys
 
+## ByteBrigadeAI demo edition
+
+This is `ByteBrigadeAI/gamehub`, adapted from
+[github-samples/tailspin-toys](https://github.com/github-samples/tailspin-toys).
+The upstream MIT license, authorship, and fictional sample data are preserved.
+The default branch is `demo-baseline`; demo pull requests target that branch.
+Upstream issue-bootstrap and agentic triage automation are removed so sessions
+do not unexpectedly create issues, commits, or paid agent runs.
+There are no scheduled workflows or recurring Dependabot updates. CI and
+CodeQL run only on pushes, pull requests, or manual dispatch.
+
+Start with the issues labeled `demo:agent` or the open PRs labeled `demo:review`.
+CodeQL scans the source on pushes and PRs. `/security-lab/` is a separate,
+intentionally vulnerable DOM XSS exercise, disabled unless `?enable=1` is passed.
+It adds no server API and does not change the static catalog architecture.
+Do not publish the security lab on a public site or enter real data.
+
+The organization walkthrough lives in
+[ByteBrigadeAI/demo-hub](https://github.com/ByteBrigadeAI/demo-hub).
+
 Tailspin Toys is a crowdfunding platform for games with a developer theme. The project is a website for a fictional game crowd-funding company, built as a single [Astro](https://astro.build/) site (fully prerendered/static output) styled with [Tailwind CSS](https://tailwindcss.com/). Its data lives in a local SQLite database accessed through [Drizzle ORM](https://orm.drizzle.team/) and Node.js's built-in SQLite driver; pages query the database directly in frontmatter at build time, so there is no separate backend service.
 
 ## Architecture
@@ -14,9 +34,9 @@ Development commands are defined in `package.json`: npm runs Astro for the dev s
 
 ## Using this template
 
-This repository is a GitHub template. When you create a new repository from it, a one-time **Bootstrap template issues** workflow (`.github/workflows/bootstrap-issues.yml`) runs automatically on the first push to `main` and opens a set of starter issues describing suggested first features. Each issue is defined by a Markdown file in `.github/bootstrap-issues/` — the first heading becomes the issue title and the remaining content becomes the body — so you can edit, add, or remove files there to control which issues are created.
-
-The workflow only runs on repositories created from the template (the `if: ${{ !github.event.repository.is_template }}` guard skips the template itself), and after creating the issues it removes itself and the `.github/bootstrap-issues/` folder in a cleanup commit so it never runs again.
+The upstream is a GitHub template. This demo edition instead has curated GitHub
+issues and PRs maintained independently in ByteBrigadeAI. Files retained in
+`.github/bootstrap-issues/` are upstream exercise references, not active automation.
 
 ## Getting started
 

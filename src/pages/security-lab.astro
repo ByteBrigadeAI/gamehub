@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+export const prerender = true;
+---
+
+<Layout title="Opt-in security lab - Tailspin Toys">
+  <section class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+    <h1 class="text-2xl text-slate-100 mb-4">Message preview security lab</h1>
+    <p class="text-slate-300 mb-4">
+      This isolated page intentionally contains DOM cross-site scripting for a
+      CodeQL and Copilot Autofix demo. It is not part of the normal catalog.
+      Enable it locally with ?enable=1&amp;message=Hello using synthetic input only.
+    </p>
+    <div id="message-preview" data-testid="message-preview" role="status" class="text-slate-100">
+      Security lab disabled. The regular catalog is unaffected.
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { initializeSecurityPreview } from '../lib/security-preview';
+  initializeSecurityPreview();
+</script>
