@@ -100,3 +100,22 @@ The application lives at the repository root:
 - `e2e-tests/`: Playwright E2E tests (home, games, accessibility)
 - `drizzle.config.ts`, `vitest.config.ts`, `astro.config.mjs`, `playwright.config.ts`: tooling config
 - `README.md`: Project documentation
+
+
+<!-- github-knowledge-base-start -->
+## Knowledge Base
+
+### Purpose
+
+This repository uses the Knowledge Base at [https://github.com/ByteBrigadeAI/gamehub](https://github.com/ByteBrigadeAI/gamehub) on branch `demo-baseline`.
+
+### Required behavior
+
+1. Before changing code, read `docs/index.md` from that branch.
+2. Use the index to open only the knowledge files relevant to the task.
+3. If the index is unavailable, stop and report that the Knowledge Base could not be loaded.
+
+### Source of truth
+
+Generated knowledge tracks the code. When the knowledge and code disagree, trust the code.
+<!-- github-knowledge-base-end -->
