@@ -12,6 +12,14 @@ describe('clampRating', () => {
         expect(clampRating(-2)).toBe(0);
         expect(clampRating(7)).toBe(5);
     });
+
+    it.each([Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY])(
+        'normalizes non-finite rating %s to zero',
+        (rating: number) => {
+            expect(clampRating(rating)).toBe(0);
+            expect(formatStarRating(rating)).toBe('☆☆☆☆☆');
+        },
+    );
 });
 
 describe('formatStarRating', () => {
