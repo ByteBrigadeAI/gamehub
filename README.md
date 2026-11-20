@@ -6,15 +6,27 @@ This is `ByteBrigadeAI/gamehub`, adapted from
 [github-samples/tailspin-toys](https://github.com/github-samples/tailspin-toys).
 The upstream MIT license, authorship, and fictional sample data are preserved.
 The default branch is `demo-baseline`; demo pull requests target that branch.
+
+Before a session, run **Actions > Prepare demo assets**. It idempotently
+creates missing issues and review PRs. Select `restore_demo` to restore only
+curated source fixtures and reopen issues after a completed demo. Select
+`scan_security` or `scan_quality` for a fresh real CodeQL scan. The run summary
+links the assets. A labeled issue contains only generated, nonfunctional secret
+patterns; change `secret_revision` for a fresh alert after resolving a prior one.
+No live credentials are created or committed.
 Upstream issue-bootstrap and agentic triage automation are removed so sessions
 do not unexpectedly create issues, commits, or paid agent runs.
-There are no scheduled workflows or recurring Dependabot updates. CI and
-CodeQL run only on pushes, pull requests, or manual dispatch.
+There are no scheduled workflows, recurring Dependabot updates, or automatic
+push/PR checks. CI and CodeQL are manual-only: Actions > select a workflow >
+Run workflow > choose the demo branch. Default-setup scanning is disabled
+to avoid duplicate or implicit recurring scans.
 
 Start with the issues labeled `demo:agent` or the open PRs labeled `demo:review`.
-CodeQL scans the source on pushes and PRs. `/security-lab/` is a separate,
+CodeQL scans the source when manually requested. `/security-lab/` is a separate,
 intentionally vulnerable DOM XSS exercise, disabled unless `?enable=1` is passed.
 It adds no server API and does not change the static catalog architecture.
+`src/lib/quality-lab.ts` is a separate, intentionally flawed CodeQL quality
+fixture, unused by the catalog and excluded from normal ESLint checks.
 Do not publish the security lab on a public site or enter real data.
 
 The organization walkthrough lives in
@@ -94,7 +106,7 @@ The frontend uses ESLint to enforce code quality across TypeScript and Astro fil
 npm run lint
 ```
 
-ESLint is also run automatically in CI on pull requests to `main`.
+ESLint also runs in the manually dispatched **Run tests** workflow.
 
 ## Type checking
 
@@ -106,10 +118,10 @@ npm run typecheck:astro  # astro sync + astro check type-check .astro files (on 
 npm run typecheck:all    # both of the above
 ```
 
-`tsgo` runs against [`tsconfig.tsgo.json`](tsconfig.tsgo.json), a scoped config that excludes `.astro` files (which the native compiler doesn't understand). Type checking runs automatically in CI on pull requests to `main`.
+`tsgo` runs against [`tsconfig.tsgo.json`](tsconfig.tsgo.json), a scoped config that excludes `.astro` files (which the native compiler doesn't understand). Type checking also runs in the manually dispatched **Run tests** workflow.
 
 > [!NOTE]
-> The native compiler is used only for type checking (`--noEmit`); the site is still built by `astro build` (Vite/esbuild). The classic `typescript` package stays on v6 until `typescript-eslint` and `@astrojs/check` support the native API (~TS 7.1); a Dependabot `ignore` in `.github/dependabot.yml` holds the classic `typescript@7` bump until then.
+> The native compiler is used only for type checking (`--noEmit`); the site is still built by `astro build` (Vite/esbuild). Keep the classic `typescript` package on v6 until `typescript-eslint` and `@astrojs/check` support the native API. Recurring Dependabot updates are disabled in this demo edition.
 
 ## License 
 

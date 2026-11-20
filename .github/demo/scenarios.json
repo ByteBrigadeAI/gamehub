@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "repository": "ByteBrigadeAI/gamehub",
+  "labels": {
+    "demo:agent": "Ready to assign to Copilot during a live demo",
+    "demo:review": "Open pull request for a code-review demo",
+    "demo:security": "Intentional synthetic security exercise",
+    "demo:ci": "Continuous integration investigation demo",
+    "demo:feature": "Feature implementation exercise",
+    "demo:bug": "Reproducible seeded defect",
+    "demo:tests": "Test generation or regression testing exercise",
+    "demo:quality": "Maintainability and reliability demo with real CodeQL findings"
+  },
+  "issues": [
+    {
+      "key": "handle-non-finite-star-ratings-consistently",
+      "title": "Handle non-finite star ratings consistently",
+      "body": "`formatStarRating(Number.NaN)` currently returns an empty string, while positive infinity appears as a five-star rating. These values can arrive from a malformed data import.\n\nStart at `src/lib/ratings.ts` and its existing tests.\n\n## Acceptance criteria\n- Normalize NaN and both infinities to a zero-star display.\n- Preserve finite values and the null 'Not yet rated' state.\n- Add table-driven regression tests.\n- Pass unit tests, lint, and both type checks.\n\nA seeded open PR addresses this issue; keep it unmerged for review.",
+      "labels": [
+        "demo:review",
+        "demo:bug"
+      ]
+    },
+    {
+      "key": "render-security-lab-previews-as-plain-text",
+      "title": "Render security-lab previews as plain text",
+      "body": "The opt-in `/security-lab/` page deliberately routes a URL query value into `innerHTML` in `src/lib/security-preview.ts`.\n\n## Acceptance criteria\n- Replace the unsafe sink with plain-text rendering, not HTML sanitization hacks.\n- Keep explicit opt-in and the default disabled state.\n- Add a browser regression showing an HTML-shaped synthetic message renders literally and creates no elements.\n- Preserve the regular static catalog and its accessibility.\n- Verify the targeted real CodeQL DOM XSS alert is absent on the fix branch.\n\nDo not publish the lab or use real data. Leave this open for Autofix/agent demos.",
+      "labels": [
+        "demo:agent",
+        "demo:security"
+      ]
+    },
+    {
+      "key": "add-a-search-box-to-find-games-by-title",
+      "title": "Add a search box to find games by title",
+      "body": "Players who already know what they're looking for shouldn't have to scan the whole catalog. Adding a simple search box on the game list page lets users quickly narrow the list by title, improving discoverability alongside the planned category and publisher filters. This builds on the existing game list data layer without changing the data model.\n\n## Acceptance criteria\n\n- [ ] The game list page includes a search input that filters games by title\n- [ ] Matching is case-insensitive and updates the visible list as the user types or submits\n- [ ] An appropriate empty state is shown when no games match the search\n- [ ] The search input follows the project's accessibility guidelines (labeling, keyboard navigation, visible focus states) and includes a `data-testid` attribute\n- [ ] Unit tests cover any new data-layer/search helper and Playwright e2e tests cover the search behavior",
+      "labels": [
+        "demo:agent",
+        "demo:feature"
+      ]
+    },
+    {
+      "key": "allow-users-to-sort-the-game-list",
+      "title": "Allow users to sort the game list",
+      "body": "Different players browse in different ways — some want the highest-rated titles first, others prefer alphabetical order. Adding sorting options to the game list page gives backers more control over how they explore the catalog. The data layer already exposes title and star rating, so this builds on existing structures.\n\n## Acceptance criteria\n\n- [ ] Users can sort the game list by title (A–Z and Z–A)\n- [ ] Users can sort the game list by star rating (highest first)\n- [ ] Games without a star rating are ordered in a sensible, documented way when sorting by rating\n- [ ] The sort control follows the project's accessibility guidelines (labeling, keyboard navigation, visible focus states) and includes a `data-testid` attribute\n- [ ] Unit tests cover the sorting helper(s) and Playwright e2e tests cover the sorting behavior",
+      "labels": [
+        "demo:agent",
+        "demo:feature"
+      ]
+    },
+    {
+      "key": "show-a-catalog-summary-on-the-home-page",
+      "title": "Show a catalog summary on the home page",
+      "body": "The home page jumps straight into the featured games grid without giving visitors a sense of the catalog's size or quality. Adding a small summary — such as the total number of games and the average star rating — gives backers useful at-a-glance context and makes the landing page feel more alive. This builds entirely on data already available in the data layer.\n\n## Acceptance criteria\n\n- [ ] The home page displays the total number of games in the catalog\n- [ ] The home page displays the average star rating across games that have a rating\n- [ ] The summary handles edge cases gracefully (no games, or no rated games)\n- [ ] The summary follows the project's styling and accessibility guidelines and includes `data-testid` attributes\n- [ ] A data-access helper computes the summary deterministically, with unit test coverage, and Playwright e2e tests verify it renders on the home page",
+      "labels": [
+        "demo:agent",
+        "demo:feature"
+      ]
+    },
+    {
+      "key": "implement-pagination-on-the-game-list-page",
+      "title": "Implement pagination on the game list page",
+      "body": "As the number of games grows, loading the entire catalog on a single page hurts performance and makes the list harder to browse. Adding pagination keeps the game list page fast and manageable.\n\n## Acceptance criteria\n\n- [ ] The data-access helpers in `src/lib/` support pagination (for example page/limit or cursor-based)\n- [ ] The game list page includes pagination controls\n- [ ] Pagination controls follow the project's accessibility guidelines and include `data-testid` attributes\n- [ ] Vitest unit tests cover the pagination helpers and Playwright e2e tests cover the pagination behavior",
+      "labels": [
+        "demo:agent",
+        "demo:feature"
+      ]
+    },
+    {
+      "key": "code-quality-fixture",
+      "title": "Preserve the funded label instead of overwriting it",
+      "body": "`src/lib/quality-lab.ts` is an isolated reliability fixture. `fundingLabel(100, 100)` returns Funding instead of Funded because a later assignment overwrites the conditional result.\n\n## Acceptance criteria\n- Preserve the funded and not-yet-funded branches.\n- Remove the redundant assignment.\n- Add tests for below, equal, and above the funding goal.\n- Verify the real CodeQL quality finding is resolved.\n- Keep the static catalog unchanged.",
+      "labels": [
+        "demo:quality",
+        "demo:agent"
+      ]
+    }
+  ],
+  "languages": [
+    "javascript-typescript"
+  ],
+  "security_paths": [
+    "src/lib/security-preview.ts",
+    "src/pages/security-lab.astro"
+  ],
+  "baseline_files": {
+    "src/lib/security-preview.ts": "export function initializeSecurityPreview(): void {\n    const parameters = new URLSearchParams(window.location.search);\n    const preview = document.getElementById('message-preview');\n    if (parameters.get('enable') === '1' && preview !== null) {\n        // Intentional DOM XSS sink: the demo fix is plain-text rendering.\n        preview.innerHTML = parameters.get('message') ?? 'Hello';\n    }\n}\n",
+    "src/pages/security-lab.astro": "---\nimport Layout from '../layouts/Layout.astro';\nexport const prerender = true;\n---\n\n<Layout title=\"Opt-in security lab - Tailspin Toys\">\n  <section class=\"bg-slate-800 rounded-xl p-6 border border-slate-700\">\n    <h1 class=\"text-2xl text-slate-100 mb-4\">Message preview security lab</h1>\n    <p class=\"text-slate-300 mb-4\">\n      This isolated page intentionally contains DOM cross-site scripting for a\n      CodeQL and Copilot Autofix demo. It is not part of the normal catalog.\n      Enable it locally with ?enable=1&amp;message=Hello using synthetic input only.\n    </p>\n    <div id=\"message-preview\" data-testid=\"message-preview\" role=\"status\" class=\"text-slate-100\">\n      Security lab disabled. The regular catalog is unaffected.\n    </div>\n  </section>\n</Layout>\n\n<script>\n  import { initializeSecurityPreview } from '../lib/security-preview';\n  initializeSecurityPreview();\n</script>\n",
+    "src/lib/ratings.ts": "/**\n * Pure formatting helpers for game star ratings.\n *\n * Kept framework-free and side-effect-free so the logic is unit-testable\n * without the Astro runtime (see `ratings.test.ts`). Consumed by the\n * `StarRating.astro` component.\n */\n\n/**\n * Clamps a rating into the displayable 0–5 range.\n */\nexport function clampRating(rating: number): number {\n    return Math.min(5, Math.max(0, rating));\n}\n\n/**\n * Builds a star glyph string for a rating between 0 and 5.\n *\n * Renders full (★), an optional half (½) and empty (☆) stars. Returns\n * `'Not yet rated'` when the rating is `null`. Ratings are clamped to the\n * 0–5 range so the output always contains exactly five star positions.\n */\nexport function formatStarRating(rating: number | null): string {\n    if (rating === null) return 'Not yet rated';\n\n    const clamped = clampRating(rating);\n    const fullStars = Math.floor(clamped);\n    const halfStar = clamped % 1 >= 0.5;\n    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);\n\n    return '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars);\n}\n",
+    "src/lib/quality-lab.ts": "/** Standalone reliability fixture; not used by the static catalog. */\nexport function fundingLabel(pledged: number, goal: number): string {\n    let label = pledged >= goal ? 'Funded' : 'Funding';\n    label = 'Funding'; // Intentional overwritten assignment for the quality demo.\n    return label;\n}\n",
+    "src/lib/ratings.test.ts": "import { describe, it, expect } from 'vitest';\nimport { clampRating, formatStarRating } from './ratings';\n\ndescribe('clampRating', () => {\n    it('returns the value unchanged when within range', () => {\n        expect(clampRating(0)).toBe(0);\n        expect(clampRating(3.5)).toBe(3.5);\n        expect(clampRating(5)).toBe(5);\n    });\n\n    it('clamps values outside the 0–5 range', () => {\n        expect(clampRating(-2)).toBe(0);\n        expect(clampRating(7)).toBe(5);\n    });\n});\n\ndescribe('formatStarRating', () => {\n    it('returns a not-rated message when rating is null', () => {\n        expect(formatStarRating(null)).toBe('Not yet rated');\n    });\n\n    it('renders only full and empty stars for whole numbers', () => {\n        expect(formatStarRating(0)).toBe('☆☆☆☆☆');\n        expect(formatStarRating(3)).toBe('★★★☆☆');\n        expect(formatStarRating(5)).toBe('★★★★★');\n    });\n\n    it('renders a half star when the fraction is at least 0.5', () => {\n        expect(formatStarRating(3.5)).toBe('★★★½☆');\n        expect(formatStarRating(4.75)).toBe('★★★★½');\n    });\n\n    it('rounds fractions below 0.5 down to a full star', () => {\n        expect(formatStarRating(3.4)).toBe('★★★☆☆');\n    });\n\n    it('always produces five star positions', () => {\n        for (const rating of [0, 1, 2.5, 3.5, 4, 5]) {\n            expect([...formatStarRating(rating)]).toHaveLength(5);\n        }\n    });\n\n    it('clamps ratings outside the 0–5 range', () => {\n        expect(formatStarRating(-1)).toBe('☆☆☆☆☆');\n        expect(formatStarRating(6)).toBe('★★★★★');\n    });\n\n    it('is deterministic for the same input', () => {\n        expect(formatStarRating(3.5)).toBe(formatStarRating(3.5));\n    });\n});\n"
+  },
+  "pull_requests": [
+    {
+      "key": "demo-non-finite-ratings",
+      "branch": "demo/non-finite-ratings",
+      "issue_key": "handle-non-finite-star-ratings-consistently",
+      "title": "Keep malformed ratings from looking like valid five-star reviews",
+      "body": "A small, locally validated fix for the linked demo issue. Leave this PR open for the review walkthrough. Application checks are manual-only, and no security exercise is changed.",
+      "files": {
+        "src/lib/ratings.ts": "/**\n * Pure formatting helpers for game star ratings.\n *\n * Kept framework-free and side-effect-free so the logic is unit-testable\n * without the Astro runtime (see `ratings.test.ts`). Consumed by the\n * `StarRating.astro` component.\n */\n\n/**\n * Clamps a rating into the displayable 0–5 range.\n */\nexport function clampRating(rating: number): number {\n    if (!Number.isFinite(rating)) return 0;\n    return Math.min(5, Math.max(0, rating));\n}\n\n/**\n * Builds a star glyph string for a rating between 0 and 5.\n *\n * Renders full (★), an optional half (½) and empty (☆) stars. Returns\n * `'Not yet rated'` when the rating is `null`. Ratings are clamped to the\n * 0–5 range so the output always contains exactly five star positions.\n */\nexport function formatStarRating(rating: number | null): string {\n    if (rating === null) return 'Not yet rated';\n\n    const clamped = clampRating(rating);\n    const fullStars = Math.floor(clamped);\n    const halfStar = clamped % 1 >= 0.5;\n    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);\n\n    return '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars);\n}\n",
+        "src/lib/ratings.test.ts": "import { describe, it, expect } from 'vitest';\nimport { clampRating, formatStarRating } from './ratings';\n\ndescribe('clampRating', () => {\n    it('returns the value unchanged when within range', () => {\n        expect(clampRating(0)).toBe(0);\n        expect(clampRating(3.5)).toBe(3.5);\n        expect(clampRating(5)).toBe(5);\n    });\n\n    it('clamps values outside the 0–5 range', () => {\n        expect(clampRating(-2)).toBe(0);\n        expect(clampRating(7)).toBe(5);\n    });\n\n    it.each([Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY])(\n        'normalizes non-finite rating %s to zero',\n        (rating: number) => {\n            expect(clampRating(rating)).toBe(0);\n            expect(formatStarRating(rating)).toBe('☆☆☆☆☆');\n        },\n    );\n});\n\ndescribe('formatStarRating', () => {\n    it('returns a not-rated message when rating is null', () => {\n        expect(formatStarRating(null)).toBe('Not yet rated');\n    });\n\n    it('renders only full and empty stars for whole numbers', () => {\n        expect(formatStarRating(0)).toBe('☆☆☆☆☆');\n        expect(formatStarRating(3)).toBe('★★★☆☆');\n        expect(formatStarRating(5)).toBe('★★★★★');\n    });\n\n    it('renders a half star when the fraction is at least 0.5', () => {\n        expect(formatStarRating(3.5)).toBe('★★★½☆');\n        expect(formatStarRating(4.75)).toBe('★★★★½');\n    });\n\n    it('rounds fractions below 0.5 down to a full star', () => {\n        expect(formatStarRating(3.4)).toBe('★★★☆☆');\n    });\n\n    it('always produces five star positions', () => {\n        for (const rating of [0, 1, 2.5, 3.5, 4, 5]) {\n            expect([...formatStarRating(rating)]).toHaveLength(5);\n        }\n    });\n\n    it('clamps ratings outside the 0–5 range', () => {\n        expect(formatStarRating(-1)).toBe('☆☆☆☆☆');\n        expect(formatStarRating(6)).toBe('★★★★★');\n    });\n\n    it('is deterministic for the same input', () => {\n        expect(formatStarRating(3.5)).toBe(formatStarRating(3.5));\n    });\n});\n"
+      }
+    }
+  ]
+}

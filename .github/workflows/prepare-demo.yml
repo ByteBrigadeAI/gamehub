@@ -1,0 +1,39 @@
+name: Prepare demo assets
+on:
+  workflow_dispatch:
+    inputs:
+      restore_demo:
+        description: Restore curated defects and reopen demo issues after a previous demo.
+        type: boolean
+        default: false
+      scan_security:
+        description: Run a fresh CodeQL scan. Restored security fixtures are always scanned.
+        type: boolean
+        default: false
+      scan_quality:
+        description: Include CodeQL maintainability and reliability findings.
+        type: boolean
+        default: false
+      secret_revision:
+        description: Keep 1 for repeat runs; change it for a fresh synthetic secret alert.
+        type: string
+        default: "1"
+      create_pull_requests:
+        description: Requires the organization Allow Actions to create PRs setting.
+        type: boolean
+        default: false
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  security-events: write
+  packages: read
+jobs:
+  prepare:
+    uses: ByteBrigadeAI/demo-hub/.github/workflows/prepare-demo.yml@demo-baseline
+    with:
+      restore_demo: ${{ inputs.restore_demo }}
+      scan_security: ${{ inputs.scan_security }}
+      scan_quality: ${{ inputs.scan_quality }}
+      secret_revision: ${{ inputs.secret_revision }}
+      create_pull_requests: ${{ inputs.create_pull_requests }}

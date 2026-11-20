@@ -6,7 +6,8 @@ import globals from "globals";
 export default [
   // Global ignores
   {
-    ignores: ["dist/", "node_modules/", ".astro/", "db/migrations/"],
+    // The isolated CodeQL fixture is intentionally flawed and never used by the app.
+    ignores: ["dist/", "node_modules/", ".astro/", "db/migrations/", "src/lib/quality-lab.ts"],
   },
 
   // Base JavaScript/TypeScript recommended rules

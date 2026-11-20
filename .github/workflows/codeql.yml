@@ -1,11 +1,5 @@
 name: CodeQL
-on:
-  push:
-    branches: [demo-baseline]
-    paths: ["src/**", "db/**"]
-  pull_request:
-    branches: [demo-baseline]
-  workflow_dispatch:
+on: workflow_dispatch
 permissions:
   contents: read
 concurrency:

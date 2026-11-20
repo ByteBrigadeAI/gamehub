@@ -1,12 +1,7 @@
 name: "Run tests"
 
-# Run tests on pull requests to main and on pushes to main
-on:
-  pull_request:
-    branches: [demo-baseline]
-  push:
-    branches: [demo-baseline]
-  workflow_dispatch:
+# Run only when explicitly started by a presenter.
+on: workflow_dispatch
 
 # Cancel superseded in-progress runs for the same ref so rapid pushes don't
 # queue behind stale runs (saves runner time and gives faster feedback).

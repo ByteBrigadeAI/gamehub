@@ -11,6 +11,9 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
 - Do not generate summary markdown files upon completion of a task
 - Always use absolute paths when running scripts and BASH commands
 - **NEVER commit or push to main automatically unless explicitly instructed to do so**
+- The demo default branch is `demo-baseline`. Workflows are manual-only; do not
+  add schedules, automatic push/PR triggers, recurring dependency updates, or
+  automatic agent runs. Do not merge seeded demo PRs unless asked.
 
 ## Code standards
 
@@ -84,7 +87,7 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
   - `npm run db:export` — migrate and seed via `predb:export`, then write the catalog grounding file to `db/catalog.json`
 
 > [!NOTE]
-> TypeScript 7 (`tsgo`) is adopted **side-by-side** for type checking only; it does not affect linting. ESLint + `typescript-eslint` and `astro check` still resolve the classic `typescript` package (kept at v6) because the native compiler's API isn't ready for them yet. Do **not** bump the classic `typescript` package to 7 (a Dependabot `ignore` holds it) until `typescript-eslint` + `@astrojs/check` support the native API. `tsgo` is `--noEmit` only; the site is still built by `astro build`.
+> TypeScript 7 (`tsgo`) is adopted **side-by-side** for type checking only; it does not affect linting. ESLint + `typescript-eslint` and `astro check` still resolve the classic `typescript` package (kept at v6) because the native compiler's API isn't ready for them yet. Do **not** bump the classic `typescript` package to 7 until `typescript-eslint` + `@astrojs/check` support the native API. `tsgo` is `--noEmit` only; the site is still built by `astro build`. Recurring Dependabot updates are disabled.
 
 ## Repository Structure
 
